@@ -47,10 +47,10 @@ const keyOperatorFx = (key) => {
   arrayToOperate.push(+fullNumber);
   const resultOp = operatorFx(arrayToOperate, operatorArr);
   operatorArr.push(key);
-  preNumbers = preNumbers.slice(preNumbers.length + 1);
+  preNumbers.splice(-preNumbers.length);
   fullNumber = undefined;
-  arrayToOperate = arrayToOperate.slice(arrayToOperate.length + 1);
-  arrayToOperate.push(+resultOp);
+  arrayToOperate.splice(1, 3, +resultOp);
+  // arrayToOperate.push(+resultOp);
 };
 const deleteFx = (arr) => arr.pop();
 
@@ -68,8 +68,7 @@ keys.addEventListener("click", (e) => {
   } else if (isNaN(+keyClicked)) {
     // is a string
     if (typeof lastClicked === "string") {
-      operatorArr.pop();
-      operatorArr.push(keyClicked);
+      operatorArr.splice(-1, 1, keyClicked);
     } else {
       // ultimo click número
       operatorArr.push(keyClicked);
@@ -78,34 +77,9 @@ keys.addEventListener("click", (e) => {
   } else {
     fullNumber = keyNumberFx(+keyClicked);
   }
-
-  lastClicked = parseFloat(keyClicked);
-});
-
-/*   (typeof lastClicked === "number") {
-    if (isNaN(+keyClicked) === "√") {
-      arrayToOperate.push(+fullNumber);
-      const resultOp = operatorFx(arrayToOperate, operatorArr);
-      arrayToOperate.pop().push(resultOp);
-    } else if (isNaN(+keyClicked) === "C") {
-      preNumbers.pop();
-    } else if (typeof +keyClicked === "number") {
-      preNumbers.push(keyClicked);
-      fullNumber = preNumbers.join("");
-      //   display1.textContent = fullNumber;
-      console.log(fullNumber, typeof fullNumber);
-    } else if (isNaN(+keyClicked) && arrayToOperate.length < 2) {
-      arrayToOperate.push(+fullNumber);
-      operatorArr.push(keyClicked);
-      preNumbers = preNumbers.slice(preNumbers.length + 1);
-      fullNumber = undefined;
-    } else {
-      //   display1.textContent = "";
-      //   // display2.textContent = `${fullNumber}${keyClicked}`;
-      operatorArr.pop().push(keyClicked);
-
-      arrayToOperate = arrayToOperate.slice(arrayToOperate.length + 1);
-      arrayToOperate.push(+resultOp);
-    }
+  if (typeof +keyClicked === "number") {
     lastClicked = +keyClicked;
-  } */
+  } else {
+    lastClicked = keyClicked;
+  }
+});
