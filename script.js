@@ -72,6 +72,7 @@ keys.addEventListener("click", (e) => {
       operatorArr.push(keyClicked);
     } else {
       // ultimo click número
+      operatorArr.push(keyClicked);
       keyOperatorFx(keyClicked);
     }
   } else {
