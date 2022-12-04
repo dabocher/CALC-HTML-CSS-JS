@@ -4,7 +4,7 @@ const display2 = document.getElementById("displayElement--2");
 
 let preNumbers = [];
 let fullNumber;
-let arrayToOperate = [0, "+"];
+let arrayToOperate = [];
 const sumaFx = (arr) => arr.reduce((acc, curr) => acc + curr);
 const restaFx = (arr) => arr.reduce((acc, curr) => acc - curr, arr[0] * 2);
 const multiFx = (arr) => arr.reduce((acc, curr) => acc * curr, 1);
@@ -13,7 +13,8 @@ const diviFx = (arr) => arr.reduce((acc, curr) => acc / curr, arr[0] ** 2);
 // fx que opera
 const operatorFx = (arr, operator) => {
   let result;
-  switch (operator.at(-1)) {
+  // arr = arr.filter((elem) => typeof elem !== "string");
+  switch (operator.at(0)) {
     case "+":
       result = sumaFx(arr);
       break;
@@ -46,10 +47,10 @@ const keyNumberFx = (key) => {
 const keyOperatorFx = (key) => {
   arrayToOperate.push(+fullNumber);
   const resultOp = operatorFx(arrayToOperate, operatorArr);
-  operatorArr.push(key);
+  operatorArr.splice(0, 2, key);
   preNumbers.splice(-preNumbers.length);
   fullNumber = undefined;
-  arrayToOperate.splice(1, 3, +resultOp);
+  arrayToOperate.splice(0, 2, +resultOp);
   // arrayToOperate.push(+resultOp);
 };
 const deleteFx = (arr) => arr.pop();
@@ -77,9 +78,7 @@ keys.addEventListener("click", (e) => {
   } else {
     fullNumber = keyNumberFx(+keyClicked);
   }
-  if (typeof +keyClicked === "number") {
-    lastClicked = +keyClicked;
-  } else {
-    lastClicked = keyClicked;
-  }
+  !isNaN(+keyClicked)
+    ? (lastClicked = +keyClicked)
+    : (lastClicked = keyClicked);
 });
