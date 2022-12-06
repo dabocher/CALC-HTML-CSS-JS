@@ -1,6 +1,5 @@
 const keys = document.getElementById("container");
 const display1 = document.getElementById("displayElement--1");
-const display2 = document.getElementById("displayElement--2");
 
 let preNumbers = [];
 let fullNumber;
@@ -13,7 +12,6 @@ const diviFx = (arr) => arr.reduce((acc, curr) => acc / curr, arr[0] ** 2);
 // fx que opera
 const operatorFx = (arr, operator) => {
   let result;
-  // arr = arr.filter((elem) => typeof elem !== "string");
   switch (operator.at(0)) {
     case "+":
       result = sumaFx(arr);
@@ -27,11 +25,11 @@ const operatorFx = (arr, operator) => {
     case "/":
       result = diviFx(arr);
       break;
-    case "√":
-      result = arr.at(-1) ** (1 / 2);
+    case "=":
+      result = sumaFx(arr);
       break;
     default:
-      console.log("0j0");
+      result;
   }
   return result;
 };
@@ -42,43 +40,78 @@ let lastClicked = "+";
 const keyNumberFx = (key) => {
   preNumbers.push(key); // string no matter
   fullNumber = preNumbers.join("");
+  display1.textContent = fullNumber;
   return fullNumber;
 };
 const keyOperatorFx = (key) => {
   arrayToOperate.push(+fullNumber);
   const resultOp = operatorFx(arrayToOperate, operatorArr);
+  display1.textContent =
+    resultOp.toString().length > 10 ? resultOp.toFixed(3) : resultOp;
   operatorArr.splice(0, 2, key);
   preNumbers.splice(-preNumbers.length);
   fullNumber = undefined;
   arrayToOperate.splice(0, 2, +resultOp);
-  // arrayToOperate.push(+resultOp);
 };
-const deleteFx = (arr) => arr.pop();
-
+const fullNumberCheckFx = () => {
+  if (preNumbers.at(-1) === ".") {
+    preNumbers.push(0);
+    return preNumbers;
+  }
+};
+const deleteFx = () => {
+  preNumbers.pop();
+  fullNumber = preNumbers.join("");
+};
 /// EVENTO CLICK
 keys.addEventListener("click", (e) => {
-  const keyClicked = e.target.textContent;
+  let keyClicked = e.target.textContent;
   debugger;
+
   let result;
-  if (+keyClicked === "C") {
-    result = deleteFx(operatorArr);
-  } else if (+keyClicked === "√") {
-    result = operatorFx(arrayToOperate, operatorArr);
-  } else if (+keyClicked === "=") {
-    result = operatorFx(arrayToOperate, operatorArr); //// CAMBIAR
-  } else if (isNaN(+keyClicked)) {
-    // is a string
-    if (typeof lastClicked === "string") {
-      operatorArr.splice(-1, 1, keyClicked);
+  if (keyClicked === "C") {
+    if (!isNaN(+lastClicked) && preNumbers.length !== 0) {
+      deleteFx();
+      display1.textContent = "0";
     } else {
-      // ultimo click número
-      operatorArr.push(keyClicked);
-      keyOperatorFx(keyClicked);
+      arrayToOperate.pop();
+      display1.textContent = "0";
     }
+  } else if (keyClicked === "√") {
+    if (!isNaN(+lastClicked)) {
+      arrayToOperate.push((+fullNumber) ** (1 / 2));
+      display1.textContent = arrayToOperate.at(-1);
+      preNumbers.splice(-preNumbers.length);
+      fullNumber = 0;
+      lastClicked = arrayToOperate.at(-1);
+    } else {
+      result = arrayToOperate[-1] ** (1 / 2);
+      arrayToOperate.splice(-1, 1, result);
+      display1.textContent = result;
+    }
+  } else if (keyClicked === "=") {
+    keyClicked = "+";
+    keyOperatorFx(keyClicked);
+    lastClicked = keyClicked;
   } else {
-    fullNumber = keyNumberFx(+keyClicked);
+    if (isNaN(+keyClicked) && keyClicked !== ".") {
+      // keyClicked es string
+      if (typeof lastClicked === "string" && lastClicked !== ".") {
+        if (lastClicked === ".") fullNumberCheckFx();
+        operatorArr.splice(-1, 1, keyClicked);
+      } else {
+        // ultimo click número
+        operatorArr.push(keyClicked);
+        keyOperatorFx(keyClicked);
+      }
+      lastClicked = keyClicked;
+    } else if (keyClicked === ".") {
+      fullNumber = keyNumberFx(keyClicked);
+      lastClicked = ".";
+    } else {
+      // keyClicked es número
+      fullNumber = keyNumberFx(+keyClicked);
+      lastClicked = +keyClicked;
+    }
   }
-  !isNaN(+keyClicked)
-    ? (lastClicked = +keyClicked)
-    : (lastClicked = keyClicked);
 });

@@ -68,6 +68,11 @@ body {
 }
 #displayElement--1 {
   padding: 1rem;
+  overflow: hidden;
+}
+#displayElement--2 {
+  padding-right: 1rem;
+  font-size: 2rem;
 }
 .container--1 {
   grid-row: 2/3;
